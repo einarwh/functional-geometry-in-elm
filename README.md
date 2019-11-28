@@ -1,3 +1,3 @@
-# Escher in Elm
+# Functional Geometry in Elm
 
-Repo for my live-coding session at Øredev 2019.
+An Elm implementation of Peter Henderson's [Functional Geometry](https://eprints.soton.ac.uk/257577/1/funcgeo2.pdf) paper.
