@@ -19,13 +19,6 @@ main =
           , b = { dx = 300.0, dy = 0.0 }
           , c = { dx = 0.0, dy = 300.0 } }
     f = createPicture fLetter
-    c = createPicture circleShapes
-    cy = createPicture (circleyShapes 2 1.0)
-    fw = createPicture (floweryShapes 5)
-    bm = createPicture (boomerangShapes 2)
-    es = createPicture eyeShapes
-    fish = createPicture fishShapes
-    n = 4
   in     
-    box |> squareLimit 4 fw
+    box |> f
         |> render []

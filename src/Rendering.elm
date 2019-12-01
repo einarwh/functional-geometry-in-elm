@@ -11,6 +11,7 @@ import Svg exposing (..)
 import Svg.Attributes exposing (..)
 
 useArrows = False
+withGuidemarks = False
 
 dottedLineColor = "grey"
 solidLineColor = "red"
@@ -99,6 +100,34 @@ toSvgElement style shape =
     Arc { startPoint, controlPoint, endPoint } -> 
       toArcElement style startPoint controlPoint endPoint
     x -> text "nothing"
+
+toGuidemarkLine : Point -> Point -> Svg msg 
+toGuidemarkLine pt1 pt2 = 
+  Svg.line 
+    [ x1 <| toString pt1.x
+    , y1 <| toString pt1.y
+    , x2 <| toString pt2.x
+    , y2 <| toString pt2.y
+    , stroke "red"
+    , strokeWidth "1.5" ] []
+
+toGuidemark : Point -> List (Svg msg) 
+toGuidemark { x, y } = 
+  let
+    d = 2.5
+    line1 = toGuidemarkLine { x = x - d, y = y - d } { x = x + d, y = y + d }
+    line2 = toGuidemarkLine { x = x - d, y = y + d } { x = x + d, y = y - d }
+  in
+    [ line1, line2 ]
+
+toSvgGuidemarkElements : Shape -> List (Svg msg)
+toSvgGuidemarkElements shape = 
+  case shape of  
+    Curve { point1, point2, point3, point4 } ->
+      (toGuidemark point2) ++ (toGuidemark point3)
+    Arc { startPoint, controlPoint, endPoint } -> 
+      toGuidemark controlPoint
+    _ -> []
 
 toDottedBoxPolylineElement : List Point -> Svg msg
 toDottedBoxPolylineElement pts = 
@@ -291,7 +320,9 @@ toSvgWithBoxes bounds boxes rendering =
     boxArrows = boxes |> List.concatMap (toBoxArrows mirror)
     boxLines = if useArrows then boxShapes ++ boxArrows else boxShapes
     toElement (shape, style) = toSvgElement style (mirrorShape mirror shape)
+    toGuidemarkElements (shape, style) = toSvgGuidemarkElements (mirrorShape mirror shape)
     things = rendering |> List.map toElement
+    guidemarks = if withGuidemarks then rendering |> List.concatMap toGuidemarkElements else []
     axes = if useArrows then (createAxes w h) else []
     markers =
       [ ("a-arrow", acolor)
@@ -300,7 +331,7 @@ toSvgWithBoxes bounds boxes rendering =
     defs = markers |> List.map createMarker |> Svg.defs []
     svgElements = 
       case boxes of 
-      [] -> things
+      [] -> things ++ guidemarks
       _ -> ([defs] ++ things ++ boxLines ++ axes)
   in
     svg
