@@ -79,6 +79,29 @@
 		"description": "Insert tossBox function solution"
 	},
 
+	"tossedBoxes (outline)": {
+		"prefix": "tossedBoxes-outline",
+		"body": [
+			"-- tossedBoxes : gather intermediate tossed boxes",
+			"tossedBoxes : Int -> Box -> List Box",
+			"tossedBoxes n box = [ box ]"
+		],
+		"description": "Insert tossedBoxes function outline"
+	},
+
+	"tossedBoxes (solution)": {
+		"prefix": "cheat-tossedBoxes",
+		"body": [
+			"-- tossedBoxes : gather intermediate tossed boxes",
+			"tossedBoxes : Int -> Box -> List Box",
+			"tossedBoxes n box =",
+			"  if n < 1 then [ box ]",
+			"  else", 
+			"    box :: tossedBoxes (n - 1) (tossBox box)"
+		],
+		"description": "Insert tossedBoxes function solution"
+	},
+
 	"moveVertically (outline)": {
 		"prefix": "moveVertically-outline",
 		"body": [
@@ -131,7 +154,12 @@
 		"prefix": "splitVertically-outline",
 		"body": [
 			"splitVertically : Float -> Box -> (Box, Box)",
-			"splitVertically f box = (box, box)"
+			"splitVertically f box =",
+			"  let",
+			"    top = box",
+			"    bot = box",
+			"  in",
+			"    (top, bot)"
 		],
 		"description": "Insert splitVertically function outline"
 	},
@@ -202,7 +230,12 @@
 		"prefix": "splitHorizontally-outline",
 		"body": [
 			"splitHorizontally : Float -> Box -> (Box, Box)",
-			"splitHorizontally f box = (box, box)"
+			"splitHorizontally f box =",
+			"  let",
+			"    left = box",
+			"    right = box",
+			"  in",
+			"    (left, right)"
 		],
 		"description": "Insert splitHorizontally function outline"
 	},
@@ -220,6 +253,33 @@
 		],
 		"description": "Insert splitHorizontally function solution"
 	},
+
+	"horizontally (solution)": {
+		"prefix": "cheat-full-horizontally",
+		"body": [
+			"moveHorizontally : Float -> Box -> Box",
+			"moveHorizontally f { a, b, c } =",
+			"  { a = add a (scale f b)",
+			"  , b = b",
+			"  , c = c }",
+			"",
+			"scaleHorizontally : Float -> Box -> Box",
+			"scaleHorizontally f { a, b, c } =",
+			"  { a = a",
+			"  , b = scale f b",
+			"  , c = c }",
+			"",
+			"splitHorizontally : Float -> Box -> (Box, Box)",
+			"splitHorizontally f box =",
+			"  let",
+			"    left = box |> scaleHorizontally f",
+			"    right = box |> moveHorizontally f |> scaleHorizontally (1 - f)",
+			"  in",
+			"    (left, right)"
+		],
+		"description": "Insert horizontally functions"
+	},
+
 
 	"turn (outline)": {
 		"prefix": "turn-outline",
@@ -359,9 +419,29 @@
 		"description": "Insert beside function solution"
 	},
 
+	"fullBeside (solution)": {
+		"prefix": "cheat-full-beside",
+		"body": [
+			"besideRatio : Int -> Int -> Picture -> Picture -> Picture",
+			"besideRatio m n p1 p2 =",
+			"  \\box ->",
+			"    let",
+			"      f = toFloat m / toFloat (m + n)",
+			"      (b1, b2) = splitHorizontally f box",
+			"    in",
+			"      (p1 b1) ++ (p2 b2)",
+			"",
+			"beside : Picture -> Picture -> Picture",
+			"beside = besideRatio 1 1"
+		],
+		"description": "Insert beside and besideRatio function solution"
+	},
+
+
 	"quartet (outline)": {
 		"prefix": "quartet-outline",
 		"body": [
+			"-- quartet : 4 pictures arranged in 2 x 2 grid",
 			"quartet : Picture -> Picture -> Picture -> Picture -> Picture",
 			"quartet nw ne sw se = blank"
 		],
@@ -371,26 +451,97 @@
 	"quartet (solution)": {
 		"prefix": "cheat-quartet",
 		"body": [
+			"-- quartet : 4 pictures arranged in 2 x 2 grid",
 			"quartet : Picture -> Picture -> Picture -> Picture -> Picture",
 			"quartet nw ne sw se =",
 			"  above (beside nw ne)",
-			"        (beside sw se)"
+			"        (beside sw se)",
 		],
-		"description": "Insert quartet function outline"
+		"description": "Insert quartet function solution"
+	},
+
+	"cycle (outline)": {
+		"prefix": "cycle-outline",
+		"body": [
+			"-- cycle : a quartet with rotations",
+			"cycle : Picture -> Picture",
+			"cycle p = blank"
+		],
+		"description": "Insert cycle function outline"
+	},
+
+	"cycle (solution)": {
+		"prefix": "cheat-cycle",
+		"body": [
+			"-- cycle : a quartet with rotations",
+			"cycle : Picture -> Picture",
+			"cycle p = quartet p (p |> turn |> turn |> turn) (p |> turn) (p |> turn |> turn)"
+		],
+		"description": "Insert cycle function solution"
+	},
+
+	"column (outline)": {
+		"prefix": "column-outline",
+		"body": [
+			"-- column : create a column of pictures",
+			"column : List Picture -> Picture",
+			"column ps = blank"
+		],
+		"description": "Insert column function outline"
+	},
+
+	"column (solution)": {
+		"prefix": "cheat-column",
+		"body": [
+			"-- column : create a column of pictures",
+			"column : List Picture -> Picture",
+			"column ps =",
+			"  case ps of ",
+			"    [] -> blank",
+			"    [p] -> p",
+			"    h::t -> aboveRatio 1 (List.length t) h (column t)"
+		],
+		"description": "Insert column function solution"
+	},
+
+	"row (outline)": {
+		"prefix": "row-outline",
+		"body": [
+			"-- row : create a row of pictures",
+			"row : List Picture -> Picture",
+			"row ps = blank"
+		],
+		"description": "Insert row function outline"
+	},
+
+	"row (solution)": {
+		"prefix": "cheat-row",
+		"body": [
+			"-- row : create a row of pictures",
+			"row : List Picture -> Picture",
+			"row ps =",
+			"  case ps of ",
+			"    [] -> blank",
+			"    [p] -> p",
+			"    h::t -> besideRatio 1 (List.length t) h (row t)"
+		],
+		"description": "Insert row function solution"
 	},
 
 	"nonet (outline)": {
 		"prefix": "nonet-outline",
 		"body": [
+			"-- nonet : 9 pictures arranged in 3 x 3 grid",
 			"nonet : Picture -> Picture -> Picture -> Picture -> Picture -> Picture -> Picture -> Picture -> Picture -> Picture",
 			"nonet nw nm ne mw mm me sw sm se = blank"
 		],
-		"description": "nonet beside function outline"
+		"description": "Insert nonet function outline"
 	},
 
 	"nonet (solution)": {
 		"prefix": "cheat-nonet",
 		"body": [
+			"-- nonet : 9 pictures arranged in 3 x 3 grid",
 			"nonet : Picture -> Picture -> Picture -> Picture -> Picture -> Picture -> Picture -> Picture -> Picture -> Picture",
 			"nonet nw nm ne mw mm me sw sm se =",
 			"  let",
@@ -399,9 +550,9 @@
 			"  in",
 			"    col (row nw nm ne)", 
 			"        (row mw mm me)",
-			"        (row sw sm se)"
+			"        (row sw sm se)",
 		],
-		"description": "Insert nonet function outline"
+		"description": "Insert nonet function solution"
 	},
 
 	"over (outline)": {
@@ -620,5 +771,34 @@
 			"      cornerBoxes (n - 1) nw ++ sideBoxes (n - 1) ne ++ westSideBoxes (n - 1) sw ++ [se]"
 		],
 		"description": "Insert cornerBoxes function solution"
+	},
+
+	"henderson letters (solution)": {
+		"prefix": "cheat-henderson-letters",
+		"body": [
+			"h = createPicture hLetter",
+			"e = createPicture eLetter",
+			"n = createPicture nLetter",
+			"d = createPicture dLetter",
+			"r = createPicture rLetter",
+			"s = createPicture sLetter",
+			"o = createPicture oLetter",
+			"name = nonet h e n d e r s o n"
+		],
+		"description": "Insert henderson letters solution"
+	},
+	"import Gather module": {
+		"prefix": "imp-gather",
+		"body": [
+			"import Gather exposing (gatherBoxes)"
+		],
+		"description": "Insert import Gather."
+	},
+	"import Recursion module": {
+		"prefix": "imp-recursion",
+		"body": [
+			"import Recursion exposing (sideBoxes, cornerBoxes)"
+		],
+		"description": "Insert import Recursion."
 	}
 }
