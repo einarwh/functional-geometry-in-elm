@@ -18,8 +18,8 @@ shrink : Float -> Point -> Point
 shrink factor { x, y } = 
   { x = factor * x, y = factor * y }
 
-flip : Point -> Point
-flip { x, y } = { x = 1 - x, y = y }
+hflip : Point -> Point
+hflip { x, y } = { x = 1 - x, y = y }
 
 vflip : Point -> Point
 vflip { x, y } = { x = x, y = 1 - y }
@@ -33,16 +33,16 @@ move off { x, y } =
 
 transform : Float -> Point -> Point -> Point
 transform d offset = 
-  flip >> shrink (1 / (sqrt 2)) >> rotate d >> move offset
+  hflip >> shrink (1 / (sqrt 2)) >> rotate d >> move offset
 
 derive1 : Shape -> Shape 
 derive1 = mirrorShape (rotate 90)
 
 derive2 : Shape -> Shape 
-derive2 = mirrorShape (flip >> shrink (1 / (sqrt 2)) >> rotate 315 >> move { x = 0, y = 1 })
+derive2 = mirrorShape (hflip >> shrink (1 / (sqrt 2)) >> rotate 315 >> move { x = 0, y = 1 })
 
 derive3 : Shape -> Shape 
-derive3 = mirrorShape (flip >> shrink (1 / (sqrt 2)) >> rotate 135 >> move { x = 1, y = 0 })
+derive3 = mirrorShape (hflip >> shrink (1 / (sqrt 2)) >> rotate 135 >> move { x = 1, y = 0 })
 
 createPoint : Float -> Float -> Point 
 createPoint x y = { x = x, y = y }
@@ -183,7 +183,7 @@ createCircley maxSize =
   let 
     offset = (4/3)*tan(pi/8) -- == 0.552284749831
     crv1 = createCircleCurve maxSize { x = (0.500 - maxSize), y = 0.0}
-    crv2 = mirrorShape flip crv1
+    crv2 = mirrorShape hflip crv1
     crv3 = mirrorShape negvflip crv1
     crv4 = mirrorShape negvflip crv2
     arcs = [ crv1, crv2, crv3, crv4 ]
@@ -212,7 +212,7 @@ circleShapes =
   let 
     offset = (4/3)*tan(pi/8) -- == 0.552284749831
     crv1 = createCircleCurve 0.200 { x = 0.300, y = 0.0}
-    crv2 = mirrorShape flip crv1
+    crv2 = mirrorShape hflip crv1
     crv3 = mirrorShape negvflip crv1
     crv4 = mirrorShape negvflip crv2
     arcs = [ crv1, crv2, crv3, crv4 ]
@@ -224,7 +224,7 @@ circleShapes2 =
   let 
     offset = (4/3)*tan(pi/8) -- == 0.552284749831
     crv1 = createCircleCurve 0.500 { x = 0.000, y = 0.0}
-    crv2 = mirrorShape flip crv1
+    crv2 = mirrorShape hflip crv1
     crv3 = mirrorShape negvflip crv1
     crv4 = mirrorShape negvflip crv2
     arcs = [ crv1, crv2, crv3, crv4 ]

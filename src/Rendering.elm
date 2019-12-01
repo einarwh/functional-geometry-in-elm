@@ -10,7 +10,7 @@ import Mirror exposing (..)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 
-useArrows = False
+useArrows = True
 withGuidemarks = False
 
 dottedLineColor = "grey"
